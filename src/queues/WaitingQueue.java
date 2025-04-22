@@ -1,8 +1,8 @@
-package job;
+package queues;
 
 import java.util.LinkedList;
 import java.util.Queue;
-
+import job.PCB;
 public class WaitingQueue {
     private Queue<PCB> queue;
 

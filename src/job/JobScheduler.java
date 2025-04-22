@@ -9,6 +9,7 @@ import utils.MemoryManager;
 public class JobScheduler implements Runnable {
     private JobQueue JobQueue;
     private ReadyQueue ReadyQueue;
+    private boolean running = true;
 
     public JobScheduler(JobQueue jobQueue, ReadyQueue readyQueue) {
         this.JobQueue = jobQueue;
@@ -18,13 +19,17 @@ public class JobScheduler implements Runnable {
     @Override
     public void run() {
         // Load jobs from job queue to ready queue
-        while (true) {
-            // Check if there is space in memory to load the next job
+        while (running) {
+            // Check if there is enough memory available
             if (MemoryManager.getAvailableMemory() > 0) {
-                // Load the next job from the job queue to the ready queue
+                // Get the next job from the job queue
                 PCB pcb = JobQueue.getNextJob();
-                if (pcb != null) {
+                if ((pcb != null) && (pcb.getRequiredMemory() <= MemoryManager.getAvailableMemory())) {
+                    // Add the job to the ready queue
                     ReadyQueue.addJob(pcb);
+                    // Remove the job from the job queue
+                    JobQueue.removeJob();
+                    System.out.println("Moved job to Ready Queue: " + pcb);
                 }
             }
         }
@@ -33,5 +38,9 @@ public class JobScheduler implements Runnable {
     public void start() {
         Thread thread = new Thread(this);
         thread.start();
+    }
+
+    public void stopScheduler() {
+        running = false;
     }
 }

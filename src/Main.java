@@ -1,8 +1,9 @@
 import job.JobScheduler;
 import job.PCB;
-import job.WaitingQueue;
+import queues.WaitingQueue;
 import queues.JobQueue;
 import queues.ReadyQueue;
+import scheduling.FCFS;
 import utils.FileReading;
 import utils.Menu;
 
@@ -16,41 +17,55 @@ public class Main {
         // create Menu for the user to select the scheduling algorithm
         Scanner scanner = new Scanner(System.in);
         JobQueue jobQueue = new JobQueue();
+
         FileReading fileReading = new FileReading(jobQueue);
         fileReading.start();
         sleep(100);
-        System.out.println("Job Queue: " + jobQueue.getSize());
+
+        System.out.println("Job Queue size: " + jobQueue.getSize());
+//        jobQueue.printJobQueue();
+
         ReadyQueue readyQueue = new ReadyQueue();
         WaitingQueue waitingQueue = new WaitingQueue();
+
         JobScheduler jobScheduler = new JobScheduler(jobQueue, readyQueue);
         jobScheduler.start();
         sleep(100);
+
         System.out.println("Ready Queue: " + readyQueue.getSize());
-//       Menu.display();
-        int choice = scanner.nextInt();
+        readyQueue.printReadyQueue();
+
+        FCFS fcfs = new FCFS(readyQueue);
+        fcfs.start();
+
+        int choice;
         do {
+            System.out.println();
+            Menu.display();
+            System.out.println("Enter your choice: ");
+            choice = scanner.nextInt();
             switch (choice) {
                 case 1:
                     System.out.println("FCFS");
                     break;
                 case 2:
-                    System.out.println("SJF");
+                    System.out.println("Round Robin");
                     break;
                 case 3:
                     System.out.println("Priority Scheduling");
                     break;
                 case 4:
-                    System.out.println("Round Robin");
-                    break;
-                case 5:
-                    System.out.println("Exit");
+                    System.out.println("Exiting...");
                     break;
                 default:
                     System.out.println("Invalid choice");
                     break;
             }
-            System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
-        } while (choice != 5);
+            if (choice == 4) {
+                System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
+                jobScheduler.stopScheduler();
+                fileReading.stopReading();
+            }
+        } while (choice != 4);
     }
 }

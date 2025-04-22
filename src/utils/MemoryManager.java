@@ -1,7 +1,7 @@
 package utils;
 
 public class MemoryManager {
-    private static int availableMemory = 512;
+    private static int availableMemory = 2048;
 
     public static int getAvailableMemory() {
         return availableMemory;

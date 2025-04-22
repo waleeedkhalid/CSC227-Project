@@ -28,6 +28,10 @@ public class PCB {
         return state;
     }
 
+    public void setState(PCBState state) {
+        this.state = state;
+    }
+
     public int getBurstTime() {
         return burstTime;
     }

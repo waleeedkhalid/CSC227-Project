@@ -31,4 +31,15 @@ public class JobQueue {
     public int getSize() {
         return jobQueue.size();
     }
+
+    public void printJobQueue() {
+        if (jobQueue.isEmpty()) {
+            System.out.println("Job Queue is empty.");
+        } else {
+            System.out.println("Job Queue:");
+            for (PCB pcb : jobQueue) {
+                System.out.println("Process ID: " + pcb.getId() + ", Burst Time: " + pcb.getBurstTime());
+            }
+        }
+    }
 }
