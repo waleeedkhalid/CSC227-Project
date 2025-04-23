@@ -8,23 +8,23 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class ReadyQueue {
-    private Queue<PCB> readyQueue;
+    private static Queue<PCB> readyQueue = new LinkedList<>();
 
-    public ReadyQueue() {
-        this.readyQueue = new LinkedList<>();
-    }
-
-    public boolean addJob(PCB pcb) {
+    public static void addJob(PCB pcb) {
         if (pcb.getRequiredMemory() <= MemoryManager.getAvailableMemory()) {
             pcb.setState(PCBState.READY);
             readyQueue.add(pcb);
             MemoryManager.allocateMemory(pcb.getRequiredMemory());
-            return true;
+        } else {
+            System.out.println("\n\nREADY QUEUE FULL");
+            System.out.println("Not enough memory to add job: " + pcb.getId());
+            System.out.println("Required Memory: " + pcb.getRequiredMemory());
+            System.out.println("Available Memory: " + MemoryManager.getAvailableMemory());
+            System.out.println("\n\n");
         }
-        return false;
     }
 
-    public PCB removeJob() {
+    public static PCB removeJob() {
         PCB pcb = readyQueue.poll();
         if(pcb != null) {
             MemoryManager.deallocateMemory(pcb.getRequiredMemory());
@@ -32,20 +32,22 @@ public class ReadyQueue {
         return pcb;
     }
 
-    public boolean isEmpty() {
+    public static boolean isEmpty() {
         return readyQueue.isEmpty();
     }
 
-    public int getMemorySize() {
-        return MemoryManager.getAvailableMemory();
-    }
-
-    public int getSize() {
+    public static int getSize() {
         return readyQueue.size();
     }
 
+    public static Queue<PCB> getReadyQueue() {
+        if (readyQueue == null) {
+            readyQueue = new LinkedList<>();
+        }
+        return readyQueue;
+    }
 
-    public void printReadyQueue(){
+    public static void printReadyQueue(){
         if (readyQueue.isEmpty()) {
             System.out.println("Ready Queue is empty.");
         } else {
