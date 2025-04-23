@@ -15,6 +15,7 @@ public class PCB {
     int completionTime;
     int startTime;
     int remainingTime; // RR
+    private int arrivalTime;
 
     boolean starvation; // Priority
 
@@ -80,6 +81,26 @@ public class PCB {
         return starvation;
     }
 
+    public int getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(int arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public void setTurnaroundTime(int turnaroundTime) {
+        this.turnaroundTime = turnaroundTime;
+    }
+
+    public void setWaitingTime(int waitingTime) {
+        this.waitingTime = waitingTime;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
     @Override
     public String toString() {
         return "PCB{" +
@@ -96,4 +117,8 @@ public class PCB {
                 ", starvation=" + starvation +
                 '}';
     }
+
+
+
+
 }
