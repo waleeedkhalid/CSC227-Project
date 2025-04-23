@@ -6,11 +6,17 @@ package job;
 public class PCB {
     int id;
     PCBState state;
-    int burstTime;
     int requiredMemory;
     int priority;
+
+    int burstTime;
     int turnaroundTime;
     int waitingTime;
+    int completionTime;
+    int startTime;
+    int remainingTime; // RR
+
+    boolean starvation; // Priority
 
     public PCB(int id, int burstTime, int priority, int requiredMemory) {
         this.id = id;
@@ -18,6 +24,12 @@ public class PCB {
         this.priority = priority;
         this.requiredMemory = requiredMemory;
         this.state = PCBState.NEW;
+        this.turnaroundTime = 0;
+        this.waitingTime = 0;
+        this.completionTime = 0;
+        this.startTime = 0;
+        this.remainingTime = burstTime;
+        this.starvation = false; // Priority
     }
 
     public int getId() {
@@ -52,6 +64,22 @@ public class PCB {
         return waitingTime;
     }
 
+    public int getCompletionTime() {
+        return completionTime;
+    }
+
+    public int getStartTime() {
+        return startTime;
+    }
+
+    public int getRemainingTime() {
+        return remainingTime;
+    }
+
+    public boolean isStarvation() {
+        return starvation;
+    }
+
     @Override
     public String toString() {
         return "PCB{" +
@@ -62,6 +90,10 @@ public class PCB {
                 ", priority=" + priority +
                 ", turnaroundTime=" + turnaroundTime +
                 ", waitingTime=" + waitingTime +
+                ", completionTime=" + completionTime +
+                ", startTime=" + startTime +
+                ", remainingTime=" + remainingTime +
+                ", starvation=" + starvation +
                 '}';
     }
 }
