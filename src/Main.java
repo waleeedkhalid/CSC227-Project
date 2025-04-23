@@ -22,7 +22,7 @@ public class Main {
         fileReading.start();
         sleep(100);
 
-        System.out.println("Job Queue size: " + jobQueue.getSize());
+//        System.out.println("Job Queue size: " + jobQueue.getSize());
 //        jobQueue.printJobQueue();
 
         ReadyQueue readyQueue = new ReadyQueue();
@@ -32,11 +32,10 @@ public class Main {
         jobScheduler.start();
         sleep(100);
 
-        System.out.println("Ready Queue: " + readyQueue.getSize());
-        readyQueue.printReadyQueue();
+//        System.out.println("Ready Queue: " + readyQueue.getSize());
+//        readyQueue.printReadyQueue();
 
         FCFS fcfs = new FCFS(readyQueue);
-        fcfs.start();
 
         int choice;
         do {
@@ -46,7 +45,9 @@ public class Main {
             choice = scanner.nextInt();
             switch (choice) {
                 case 1:
-                    System.out.println("FCFS");
+                    System.out.println("FCFS: First Come First Serve");
+                    fcfs.run();
+                    fcfs.printStatistics();
                     break;
                 case 2:
                     System.out.println("Round Robin");
