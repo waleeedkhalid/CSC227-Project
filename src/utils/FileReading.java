@@ -8,11 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileReading implements Runnable {
-    private JobQueue jobQueue;
-
-    public FileReading(JobQueue jobQueue) {
-        this.jobQueue = jobQueue;
-    }
 
     @Override
     public void run() {
@@ -39,7 +34,7 @@ public class FileReading implements Runnable {
                     int memoryRequired = Integer.parseInt(parts[3]);
                     PCB pcb = new PCB(processID, burstTime, priority, memoryRequired);
                     System.out.println(pcb);
-                    jobQueue.addJob(pcb);
+                    JobQueue.addJob(pcb);
                 } catch (NumberFormatException e) {
                     System.out.println("ERR:"+line);
                 } catch (Exception e) {
