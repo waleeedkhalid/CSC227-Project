@@ -1,19 +1,25 @@
 import job.JobScheduler;
-import job.PCB;
 import queues.WaitingQueue;
 import queues.JobQueue;
 import queues.ReadyQueue;
 import scheduling.FCFS;
 import utils.FileReading;
+import utils.MemoryManager;
 import utils.Menu;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import static java.lang.Thread.sleep;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
+        // MEMORY MANAGER SECTION
+        MemoryManager.setAvailableMemory(2048);
+
+        // RR QUANTUM TIME SECTION
+
+
+
         // create Menu for the user to select the scheduling algorithm
         Scanner scanner = new Scanner(System.in);
         JobQueue jobQueue = new JobQueue();
@@ -22,8 +28,6 @@ public class Main {
         fileReading.start();
         sleep(100);
 
-//        System.out.println("Job Queue size: " + jobQueue.getSize());
-//        jobQueue.printJobQueue();
 
         ReadyQueue readyQueue = new ReadyQueue();
         WaitingQueue waitingQueue = new WaitingQueue();
@@ -32,21 +36,27 @@ public class Main {
         jobScheduler.start();
         sleep(100);
 
-//        System.out.println("Ready Queue: " + readyQueue.getSize());
-//        readyQueue.printReadyQueue();
-
-        FCFS fcfs = new FCFS(readyQueue);
-
         int choice;
         do {
+            if(jobQueue.isEmpty()) {
+                System.out.println("No jobs in the queue");
+                System.out.println("Exiting...");
+                System.exit(0);
+                return;
+            }
+            System.out.println("Loading jobs...");
             System.out.println();
             Menu.display();
             System.out.println("Enter your choice: ");
             choice = scanner.nextInt();
+
+            // Instantiate the CPU scheduling algorithms
+            FCFS fcfs = new FCFS(readyQueue);
+
             switch (choice) {
                 case 1:
                     System.out.println("FCFS: First Come First Serve");
-                    fcfs.run();
+                    fcfs.run(true);
                     fcfs.printStatistics();
                     break;
                 case 2:
@@ -57,15 +67,11 @@ public class Main {
                     break;
                 case 4:
                     System.out.println("Exiting...");
+                    System.exit(0); // System Call
                     break;
                 default:
                     System.out.println("Invalid choice");
                     break;
-            }
-            if (choice == 4) {
-                System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
-                jobScheduler.stopScheduler();
-                fileReading.stopReading();
             }
         } while (choice != 4);
     }
