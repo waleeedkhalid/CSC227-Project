@@ -4,8 +4,10 @@ import queues.WaitingQueue;
 import queues.JobQueue;
 import queues.ReadyQueue;
 import scheduling.FCFS;
+import scheduling.PriorityScheduler;
 import utils.FileReading;
 import utils.Menu;
+
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -53,7 +55,8 @@ public class Main {
                     System.out.println("Round Robin");
                     break;
                 case 3:
-                    System.out.println("Priority Scheduling");
+                    PriorityScheduler priorityScheduler = new PriorityScheduler(readyQueue);
+                    priorityScheduler.run();
                     break;
                 case 4:
                     System.out.println("Exiting...");
