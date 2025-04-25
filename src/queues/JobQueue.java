@@ -4,19 +4,22 @@ import job.PCB;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class JobQueue {
-    private static final Queue<PCB> jobQueue = new LinkedList<>();
+    private static final Queue<PCB> jobQueue = new ConcurrentLinkedQueue<>();
 
     public static void addJob(PCB pcb) {
         jobQueue.add(pcb);
     }
 
     public static void removeJob() {
-        jobQueue.remove();
+        if (!jobQueue.isEmpty()) {
+            jobQueue.remove();
+        }
     }
 
-    public static PCB getNextJob() {
+    public static synchronized PCB getNextJob() {
         return jobQueue.peek();
     }
 
