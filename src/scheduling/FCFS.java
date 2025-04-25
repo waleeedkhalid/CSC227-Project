@@ -4,68 +4,72 @@ import job.PCB;
 import job.PCBState;
 import queues.JobQueue;
 import queues.ReadyQueue;
+import utils.ExecutionEvent;
 import utils.FileReading;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 public class FCFS {
     private int currentTime;
     private int totalTurnaroundTime;
     private int totalWaitingTime;
+    private List<ExecutionEvent> executionLog;
+    private List<PCB> completedJobs;
 
     public FCFS() {
         this.currentTime = 0;
         this.totalTurnaroundTime = 0;
         this.totalWaitingTime = 0;
+        this.executionLog = new ArrayList<>();
+        this.completedJobs = new ArrayList<>();
     }
 
     public void schedule(PCB job) {
         job.setState(PCBState.RUNNING);
-        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState() + ", Selected at: " + currentTime + ", Starting Burst Time: " + currentTime + ", Ending Burst Time: " + (currentTime + job.getBurstTime()));
+        // Record start and end times for Gantt chart
+        int startTime = currentTime;
+        int endTime = currentTime + job.getBurstTime();
+        executionLog.add(new ExecutionEvent(job.getId(), startTime, endTime));
 
-        currentTime += job.getBurstTime(); //25 + 13 + 20 + 10 = 68
+        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState() + ", Selected at: " + currentTime + ", Starting Burst Time: " + currentTime + ", Ending Burst Time: " + endTime);
+
+        currentTime += job.getBurstTime();
 
         job.setState(PCBState.TERMINATED);
-        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState());
+//        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState());
+        completedJobs.add(job);
 
+        // Calculate metrics
+        job.setTurnaroundTime(currentTime);
+        job.setWaitingTime(currentTime - job.getBurstTime());
 
-
-        totalTurnaroundTime += currentTime; // 25 + 38 + 58 + 68 = 189
-        totalWaitingTime += (currentTime - job.getBurstTime());// 25 - 25 = 0, 38 - 13 = 25, 58 - 20 = 38, 68 - 10 = 58, Waiting time = 0 + 25 + 38 + 58 = 121
+        totalTurnaroundTime += job.getTurnaroundTime();
+        totalWaitingTime += job.getWaitingTime();
     }
 
-    public double getAverageTurnaroundTime(int totalJobs) {
-        return (double) totalTurnaroundTime / totalJobs;
+    public List<ExecutionEvent> getExecutionLog() {
+        return executionLog;
     }
-
-    public double getAverageWaitingTime(int totalJobs) {
-        return (double) totalWaitingTime / totalJobs;
-    }
-
-    public void printAverageTimes(int totalJobs) {
-        System.out.println();
-        System.out.println("Average Turnaround Time: " + getAverageTurnaroundTime(totalJobs));
-        System.out.println("Average Waiting Time: " + getAverageWaitingTime(totalJobs));
+    public List<PCB> getCompletedJobs() {
+        return completedJobs;
     }
 
     public void run() {
-        int totalJobs = 0;
+        Queue<PCB> jobQueue = JobQueue.getJobQueue();
+        Queue<PCB> readyQueue = ReadyQueue.getReadyQueue();
 
-        while (!ReadyQueue.isEmpty() || !JobQueue.isEmpty()) {
-            PCB job = ReadyQueue.removeJob(); // removes & deallocates memory
+        while (!jobQueue.isEmpty()) {
+            PCB job = jobQueue.poll();
             if (job != null) {
+                readyQueue.add(job);
                 schedule(job);
-                totalJobs++;
-            } else {
-                try {
-                    Thread.sleep(100); // wait for jobs to arrive
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
             }
         }
 
-        printAverageTimes(totalJobs);
+        // Display the average turnaround and waiting times
+        System.out.println("Average Turnaround Time: " + (totalTurnaroundTime / completedJobs.size()));
+        System.out.println("Average Waiting Time: " + (totalWaitingTime / completedJobs.size()));
     }
 }
