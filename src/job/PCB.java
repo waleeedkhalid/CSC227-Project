@@ -15,7 +15,7 @@ public class PCB {
     int completionTime;
     int startTime;
     int remainingTime; // RR
-
+    int originalBurstTime; // RR
     boolean starvation; // Priority
 
     public void setId(int id) {
@@ -116,10 +116,17 @@ public class PCB {
         return remainingTime;
     }
 
+
     public boolean isStarvation() {
         return starvation;
     }
 
+    public int getOriginalBurstTime() {
+        return originalBurstTime;
+    }
+    public void setOriginalBurstTime(int originalBurstTime) {
+        this.originalBurstTime = originalBurstTime;
+    }
     @Override
     public String toString() {
         return "PCB{" +
