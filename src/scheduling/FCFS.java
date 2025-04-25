@@ -35,11 +35,19 @@ public class FCFS {
         return (double) totalWaitingTime / totalJobs;
     }
 
+    public void printAverageTimes(int totalJobs) {
+        System.out.println();
+        System.out.println("Average Turnaround Time: " + getAverageTurnaroundTime(totalJobs));
+        System.out.println("Average Waiting Time: " + getAverageWaitingTime(totalJobs));
+    }
+
     public void run() {
         Queue<PCB> queue = ReadyQueue.getReadyQueue();
+        int totalJobs = queue.size();
         while (!queue.isEmpty()) {
             PCB job = queue.poll();
             schedule(job);
         }
+        printAverageTimes(totalJobs);
     }
 }
