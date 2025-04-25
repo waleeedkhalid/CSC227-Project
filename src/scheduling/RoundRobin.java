@@ -3,69 +3,50 @@ package scheduling;
 import job.PCB;
 import job.PCBState;
 import queues.ReadyQueue;
-import utils.ExecutionEvent;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 public class RoundRobin {
-    static List<PCB> completedJobs = new ArrayList<>();
-    private static int quantumTime = 0; // QUANTUM TIME (ms)
+    int currentTime;
+    int totalTurnaroundTime;
+    int totalWaitingTime;
+    int timeQuantum = 0;
 
-    public static void setQuantumTime(int quantumTime) {
-        RoundRobin.quantumTime = quantumTime;
+    public RoundRobin(int timeQuantum) {
+        this.currentTime = 0;
+        this.totalTurnaroundTime = 0;
+        this.totalWaitingTime = 0;
+        this.timeQuantum = timeQuantum;
     }
 
-    public static List<ExecutionEvent> run() {
-        System.out.println("\nExecuting Round-Robin (RR) Scheduling with quantum = " + quantumTime + "ms...");
-        List<ExecutionEvent> executionLog = new ArrayList<>();
-        Queue<PCB> queue = ReadyQueue.getReadyQueue();
-        int currentTime = 0;
-
-        // Initialize processes
-        for (PCB job : queue) {
-            job.setRemainingTime(job.getBurstTime());
-            job.setState(PCBState.READY);
+    public void schedule(PCB job) {
+        job.setState(PCBState.RUNNING);
+        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState() + ", Selected at: " + currentTime + ", Starting Burst Time: " + currentTime + ", Ending Burst Time: " + (currentTime + Math.min(job.getBurstTime(), timeQuantum)));
+        int burstTime = Math.min(job.getBurstTime(), timeQuantum); // Get the burst time for the job
+        currentTime += burstTime; // Update the current time (small time)
+        job.setBurstTime(job.getBurstTime() - burstTime); // Decrease the burst time of the job
+        if (job.getBurstTime() == 0) {
+            job.setState(PCBState.TERMINATED); // If the job is finished, set its state to terminated
+            totalTurnaroundTime += currentTime; // Update the total turnaround time
+            totalWaitingTime += (currentTime - job.getBurstTime()); // Update the total waiting time
+        } else {
+            job.setState(PCBState.READY); // If the job is not finished, set its state to ready
         }
+    }
 
-        while (!queue.isEmpty()) {
-            PCB job = queue.poll();
+    public double getAverageTurnaroundTime(int totalJobs) {
+        return (double) totalTurnaroundTime / totalJobs;
+    }
 
-            int executionTime = Math.min(quantumTime, job.getRemainingTime());
+    public double getAverageWaitingTime(int totalJobs) {
+        return (double) totalWaitingTime / totalJobs;
+    }
 
-            // Execute the job for up to quantum time units
-            executionLog.add(new ExecutionEvent(job.getId(), currentTime, currentTime + executionTime));
-            currentTime += executionTime;
-            job.setRemainingTime(job.getRemainingTime() - executionTime);
-
-            if (job.getRemainingTime() > 0) {
-                // If job is not completed, put back in queue
-                queue.add(job);
-            } else {
-                // Job is completed
-                job.setCompletionTime(currentTime);
-                job.setTurnaroundTime(job.getCompletionTime()); // Assuming arrival time is 0
-                job.setWaitingTime(job.getTurnaroundTime() - job.getBurstTime());
-                job.setState(PCBState.COMPLETED);
-                completedJobs.add(job);
+    public void run() {
+        while (!ReadyQueue.getReadyQueue().isEmpty()) {
+            PCB job = ReadyQueue.getReadyQueue().poll();
+            schedule(job);
+            if (job.getState() == PCBState.READY) {
+                ReadyQueue.getReadyQueue().add(job);
             }
         }
-
-        // Print the execution log
-        System.out.println("Execution Log:");
-        for (ExecutionEvent event : executionLog) {
-            System.out.println("Process " + event.getProcessId() + " executed from " + event.getStartTime() + " to " + event.getEndTime());
-        }
-
-        double avgTurnaroundTime = (currentTime / (double) completedJobs.size());
-        double avgWaitingTime = (currentTime / (double) completedJobs.size());
-
-        System.out.println("Total time taken: " + currentTime + "ms");
-        System.out.println("Average Turnaround Time: " + avgTurnaroundTime + "ms");
-        System.out.println("Average Waiting Time: " + avgWaitingTime + "ms");
-
-        return executionLog;
     }
 }
