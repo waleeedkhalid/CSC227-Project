@@ -3,20 +3,19 @@ package scheduling;
 import job.PCB;
 import job.PCBState;
 import queues.ReadyQueue;
+import utils.FileReading;
+
+import java.util.Queue;
 
 public class FCFS {
     private int currentTime;
     private int totalTurnaroundTime;
     private int totalWaitingTime;
-    private ReadyQueue readyQueue;
-    private int totalJobs;
 
-    public FCFS(ReadyQueue readyQueue) {
-        this.readyQueue = readyQueue;
+    public FCFS() {
         this.currentTime = 0;
         this.totalTurnaroundTime = 0;
         this.totalWaitingTime = 0;
-        this.totalJobs = readyQueue.getSize();
     }
 
     public void schedule(PCB job) {
@@ -36,21 +35,11 @@ public class FCFS {
         return (double) totalWaitingTime / totalJobs;
     }
 
-    public void printStatistics() {
-        System.out.println("Average Turnaround Time: " + getAverageTurnaroundTime(totalJobs));
-        System.out.println("Average Waiting Time: " + getAverageWaitingTime(totalJobs));
-    }
-
     public void run() {
-        totalJobs = readyQueue.getSize();
-        int counter = 1;
-        while (counter <= totalJobs) {
-            PCB job = readyQueue.removeJob();
-            if (job != null) {
-                schedule(job);
-            }
-            readyQueue.addJob(job);
-            counter++;
+        Queue<PCB> queue = ReadyQueue.getReadyQueue();
+        while (!queue.isEmpty()) {
+            PCB job = queue.poll();
+            schedule(job);
         }
     }
 }
