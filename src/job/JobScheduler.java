@@ -12,17 +12,24 @@ public class JobScheduler implements Runnable {
     public void run() {
         // Load jobs from job queue to ready queue
         while (true) {
-            // Check if there is enough memory available
-            if (MemoryManager.getAvailableMemory() > 0) {
-                // Get the next job from the job queue
-                PCB pcb = JobQueue.getNextJob();
-                if (pcb != null) {
-                    // Add the job to the ready queue
-                    ReadyQueue.addJob(pcb);
-                    // Remove the job from the job queue
-                    JobQueue.removeJob();
-//                    System.out.println("Moved job to Ready Queue: " + pcb);
+            while (!JobQueue.isEmpty()) {
+                // Check if there is enough memory available
+                if (MemoryManager.getAvailableMemory() > 0) {
+                    // Get the next job from the job queue
+                    PCB pcb = JobQueue.getNextJob();
+                    if ((pcb != null) && (pcb.getRequiredMemory() <= MemoryManager.getAvailableMemory())) {
+                        // Add the job to the ready queue
+                        ReadyQueue.addJob(pcb);
+                        // Remove the job from the job queue
+                        JobQueue.removeJob();
+                        System.out.println("Moved job to Ready Queue: " + pcb);
+                    }
                 }
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
