@@ -16,7 +16,7 @@ public class JobScheduler implements Runnable {
             if (MemoryManager.getAvailableMemory() > 0) {
                 // Get the next job from the job queue
                 PCB pcb = JobQueue.getNextJob();
-                if ((pcb != null) && (pcb.getRequiredMemory() <= MemoryManager.getAvailableMemory())) {
+                if (pcb != null) {
                     // Add the job to the ready queue
                     ReadyQueue.addJob(pcb);
                     // Remove the job from the job queue
