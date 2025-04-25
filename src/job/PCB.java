@@ -15,9 +15,48 @@ public class PCB {
     int completionTime;
     int startTime;
     int remainingTime; // RR
-    private int arrivalTime;
-
+    int originalBurstTime; // RR
     boolean starvation; // Priority
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setRequiredMemory(int requiredMemory) {
+        this.requiredMemory = requiredMemory;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public void setBurstTime(int burstTime) {
+        this.burstTime = burstTime;
+    }
+
+    public void setTurnaroundTime(int turnaroundTime) {
+        this.turnaroundTime = turnaroundTime;
+    }
+
+    public void setWaitingTime(int waitingTime) {
+        this.waitingTime = waitingTime;
+    }
+
+    public void setCompletionTime(int completionTime) {
+        this.completionTime = completionTime;
+    }
+
+    public void setStartTime(int startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setRemainingTime(int remainingTime) {
+        this.remainingTime = remainingTime;
+    }
+
+    public void setStarvation(boolean starvation) {
+        this.starvation = starvation;
+    }
 
     public PCB(int id, int burstTime, int priority, int requiredMemory) {
         this.id = id;
@@ -77,30 +116,17 @@ public class PCB {
         return remainingTime;
     }
 
+
     public boolean isStarvation() {
         return starvation;
     }
 
-    public int getArrivalTime() {
-        return arrivalTime;
+    public int getOriginalBurstTime() {
+        return originalBurstTime;
     }
-
-    public void setArrivalTime(int arrivalTime) {
-        this.arrivalTime = arrivalTime;
+    public void setOriginalBurstTime(int originalBurstTime) {
+        this.originalBurstTime = originalBurstTime;
     }
-
-    public void setTurnaroundTime(int turnaroundTime) {
-        this.turnaroundTime = turnaroundTime;
-    }
-
-    public void setWaitingTime(int waitingTime) {
-        this.waitingTime = waitingTime;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
     @Override
     public String toString() {
         return "PCB{" +
@@ -117,8 +143,4 @@ public class PCB {
                 ", starvation=" + starvation +
                 '}';
     }
-
-
-
-
 }

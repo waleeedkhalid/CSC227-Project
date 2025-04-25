@@ -4,42 +4,34 @@ import job.PCB;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class JobQueue {
-    private Queue<PCB> jobQueue;
+    private static final Queue<PCB> jobQueue = new ConcurrentLinkedQueue<>();
 
-    public JobQueue() {
-        this.jobQueue = new LinkedList<>();
+    public static void addJob(PCB pcb) {
+        jobQueue.add(pcb);
     }
 
-    public boolean addJob(PCB pcb) {
-        return jobQueue.add(pcb);
+    public static void removeJob() {
+        if (!jobQueue.isEmpty()) {
+            jobQueue.remove();
+        }
     }
 
-    public PCB removeJob() {
-        return jobQueue.remove();
-    }
-
-    public PCB getNextJob() {
+    public static synchronized PCB getNextJob() {
         return jobQueue.peek();
     }
 
-    public boolean isEmpty() {
+    public static boolean isEmpty() {
         return jobQueue.isEmpty();
     }
 
-    public int getSize() {
+    public static int getSize() {
         return jobQueue.size();
     }
 
-    public void printJobQueue() {
-        if (jobQueue.isEmpty()) {
-            System.out.println("Job Queue is empty.");
-        } else {
-            System.out.println("Job Queue:");
-            for (PCB pcb : jobQueue) {
-                System.out.println("Process ID: " + pcb.getId() + ", Burst Time: " + pcb.getBurstTime());
-            }
-        }
+    public static Queue<PCB> getJobQueue() {
+        return jobQueue;
     }
 }

@@ -1,46 +1,36 @@
 import job.JobScheduler;
-import job.PCB;
-import queues.WaitingQueue;
 import queues.JobQueue;
 import queues.ReadyQueue;
 import scheduling.FCFS;
-import scheduling.PriorityScheduler;
-import utils.FileReading;
-import utils.Menu;
+//import scheduling.PriorityScheduling;
+import scheduling.RoundRobin;
+import utils.*;
 
-
-import java.util.ArrayList;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 import static java.lang.Thread.sleep;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        // create Menu for the user to select the scheduling algorithm
+        MemoryManager.setAvailableMemory(2048); // MEMORY MANAGER SECTION
+        final int TIME_QUANTUM = 7; // Round Robin time quantum (ms)
+
         Scanner scanner = new Scanner(System.in);
-        JobQueue jobQueue = new JobQueue();
-
-        FileReading fileReading = new FileReading(jobQueue);
-        fileReading.start();
-        sleep(100);
-
-//        System.out.println("Job Queue size: " + jobQueue.getSize());
-//        jobQueue.printJobQueue();
-
-        ReadyQueue readyQueue = new ReadyQueue();
-        WaitingQueue waitingQueue = new WaitingQueue();
-
-        JobScheduler jobScheduler = new JobScheduler(jobQueue, readyQueue);
-        jobScheduler.start();
-        sleep(100);
-
-//        System.out.println("Ready Queue: " + readyQueue.getSize());
-//        readyQueue.printReadyQueue();
-
-        FCFS fcfs = new FCFS(readyQueue);
 
         int choice;
         do {
+            initializeJobQueue();
+
+            JobScheduler jobScheduler = new JobScheduler();
+            jobScheduler.start();
+            sleep(100);
+
+            // Instantiate the CPU scheduling algorithms
+            FCFS fcfs = new FCFS();
+//            PriorityScheduling priorityScheduling = new PriorityScheduling();
+            RoundRobin roundRobin = new RoundRobin(TIME_QUANTUM);
+
             System.out.println();
             Menu.display();
             System.out.println("Enter your choice: ");
@@ -49,27 +39,37 @@ public class Main {
                 case 1:
                     System.out.println("FCFS: First Come First Serve");
                     fcfs.run();
-                    fcfs.printStatistics();
                     break;
                 case 2:
                     System.out.println("Round Robin");
+
+                    roundRobin.run();
                     break;
                 case 3:
-                    PriorityScheduler priorityScheduler = new PriorityScheduler(readyQueue);
-                    priorityScheduler.run();
+                    System.out.println("Priority Scheduling");
+//                    priorityScheduling.run();
                     break;
                 case 4:
                     System.out.println("Exiting...");
+                    System.exit(0); // System Call
                     break;
                 default:
                     System.out.println("Invalid choice");
                     break;
             }
-            if (choice == 4) {
-                System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
-                jobScheduler.stopScheduler();
-                fileReading.stopReading();
-            }
-        } while (choice != 4);
+        } while (true);
+    }
+
+    private static void initializeJobQueue() throws InterruptedException {
+        MemoryManager.setAvailableMemory(2048); // Reset memory after each scheduling algorithm
+        FileReading fileReading = new FileReading();
+        fileReading.start();
+        sleep(100);
+
+        if (JobQueue.isEmpty()) {
+            System.out.println("No jobs in the queue");
+            System.out.println("Exiting...");
+            System.exit(0);
+        }
     }
 }

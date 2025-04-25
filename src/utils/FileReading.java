@@ -8,15 +8,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileReading implements Runnable {
-    private JobQueue jobQueue;
-    private boolean running = true;
-
-    public FileReading(JobQueue jobQueue) {
-        this.jobQueue = jobQueue;
-    }
 
     @Override
     public void run() {
+        System.out.println();
         System.out.println("Reading file");
         read();
     }
@@ -30,7 +25,7 @@ public class FileReading implements Runnable {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("job.txt"));
             String line;
-            while (running && ((line=reader.readLine()) != null)) {
+            while ((line=reader.readLine()) != null) {
                 String[] parts = line.split("[:;]");
                 // ProcessID:BurstTime:Priority:MemoryRequired
                 try {
@@ -40,7 +35,7 @@ public class FileReading implements Runnable {
                     int memoryRequired = Integer.parseInt(parts[3]);
                     PCB pcb = new PCB(processID, burstTime, priority, memoryRequired);
                     System.out.println(pcb);
-                    jobQueue.addJob(pcb);
+                    JobQueue.addJob(pcb);
                 } catch (NumberFormatException e) {
                     System.out.println("ERR:"+line);
                 } catch (Exception e) {
@@ -52,9 +47,5 @@ public class FileReading implements Runnable {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-    }
-    public void stopReading() {
-        // Implement logic to stop reading the file if needed
-        running = false;
     }
 }
