@@ -24,6 +24,10 @@ public class ReadyQueue {
         }
     }
 
+    public static PCB getNextJob() {
+        return readyQueue.peek();
+    }
+
     public static PCB removeJob() {
         PCB pcb = readyQueue.poll();
         if(pcb != null) {
@@ -40,10 +44,11 @@ public class ReadyQueue {
         return readyQueue.size();
     }
 
+    public static Queue<PCB> getJobs() {
+        return readyQueue;
+    }
+
     public static Queue<PCB> getReadyQueue() {
-        if (readyQueue == null) {
-            readyQueue = new LinkedList<>();
-        }
         return readyQueue;
     }
 
