@@ -11,6 +11,7 @@ public class FileReading implements Runnable {
 
     @Override
     public void run() {
+        System.out.println();
         System.out.println("Reading file");
         read();
     }
