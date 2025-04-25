@@ -2,7 +2,7 @@ import job.JobScheduler;
 import queues.JobQueue;
 import queues.ReadyQueue;
 import scheduling.FCFS;
-import scheduling.PriorityScheduling;
+//import scheduling.PriorityScheduling;
 import scheduling.RoundRobin;
 import utils.*;
 
@@ -28,7 +28,7 @@ public class Main {
 
             // Instantiate the CPU scheduling algorithms
             FCFS fcfs = new FCFS();
-            PriorityScheduling priorityScheduling = new PriorityScheduling();
+//            PriorityScheduling priorityScheduling = new PriorityScheduling();
             RoundRobin roundRobin = new RoundRobin(TIME_QUANTUM);
 
             System.out.println();
@@ -47,7 +47,7 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("Priority Scheduling");
-                    priorityScheduling.run();
+//                    priorityScheduling.run();
                     break;
                 case 4:
                     System.out.println("Exiting...");
@@ -61,6 +61,7 @@ public class Main {
     }
 
     private static void initializeJobQueue() throws InterruptedException {
+        MemoryManager.setAvailableMemory(2048); // Reset memory after each scheduling algorithm
         FileReading fileReading = new FileReading();
         fileReading.start();
         sleep(100);
