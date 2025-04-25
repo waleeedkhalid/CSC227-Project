@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class JobQueue {
-    private static Queue<PCB> jobQueue = new LinkedList<>();
+    private static final Queue<PCB> jobQueue = new LinkedList<>();
 
     public static void addJob(PCB pcb) {
         jobQueue.add(pcb);
