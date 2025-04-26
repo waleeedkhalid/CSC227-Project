@@ -5,6 +5,7 @@ import job.PCBState;
 import queues.JobQueue;
 import queues.ReadyQueue;
 import utils.ExecutionEvent;
+import utils.GanttChart;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -76,8 +77,7 @@ public class RoundRobin {
         }
         double averageTurnaroundTime = (double) totalTurnaroundTime / JobQueue.getJobQueue().size();
         double averageWaitingTime = (double) totalWaitingTime / JobQueue.getJobQueue().size();
-        System.out.println("Average Turnaround Time: " + averageTurnaroundTime);
-        System.out.println("Average Waiting Time: " + averageWaitingTime);
+        GanttChart.printTimes(averageTurnaroundTime, averageWaitingTime);
     }
 
     public List<ExecutionEvent> getExecutionLog() {

@@ -5,6 +5,7 @@ import job.PCBState;
 import queues.JobQueue;
 import queues.ReadyQueue;
 import utils.ExecutionEvent;
+import utils.GanttChart;
 import utils.MemoryManager;
 
 import java.util.ArrayList;
@@ -110,9 +111,7 @@ public class PriorityScheduling {
         if (!completedJobs.isEmpty()) {
             double averageTurnaroundTime = (double) totalTurnaroundTime / completedJobs.size();
             double averageWaitingTime = (double) totalWaitingTime / completedJobs.size();
-
-            System.out.println("Average Turnaround Time: " + averageTurnaroundTime);
-            System.out.println("Average Waiting Time: " + averageWaitingTime);
+            GanttChart.printTimes(averageTurnaroundTime, averageWaitingTime);
         }
     }
 }

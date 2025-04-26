@@ -72,12 +72,17 @@ public class GanttChart {
 
     public static void displayStatistics(List<PCB> jobs) {
         System.out.println("\nStatistics:");
-        System.out.printf("%-10s %-10s %-10s\n", "Process ID", "Turnaround", "Waiting");
+        System.out.printf("%-10s %-10s %-10s\n", "Process ID", "Turnaround(ms)", "Waiting(ms)");
         for (PCB job : jobs) {
             System.out.printf("%-10d %-10d %-10d\n",
                     job.getId(),
                     job.getTurnaroundTime(),
                     job.getWaitingTime());
         }
+    }
+
+    public static void printTimes(double averageTurnaroundTime, double averageWaitingTime) {
+        System.out.println("Average Turnaround Time: " + String.format("%.2f", averageTurnaroundTime) + "ms");
+        System.out.println("Average Waiting Time: " + String.format("%.2f", averageWaitingTime) + "ms");
     }
 }

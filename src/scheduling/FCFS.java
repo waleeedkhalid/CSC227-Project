@@ -6,6 +6,7 @@ import queues.JobQueue;
 import queues.ReadyQueue;
 import utils.ExecutionEvent;
 import utils.FileReading;
+import utils.GanttChart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,6 @@ public class FCFS {
         // Display the average turnaround and waiting times
         double averageTurnaroundTime = (double) totalTurnaroundTime / (double) completedJobs.size();
         double averageWaitingTime = (double) totalWaitingTime / (double) completedJobs.size();
-        System.out.println("Average Turnaround Time: " + averageTurnaroundTime);
-        System.out.println("Average Waiting Time: " + averageWaitingTime);
+        GanttChart.printTimes(averageTurnaroundTime, averageWaitingTime);
     }
 }
