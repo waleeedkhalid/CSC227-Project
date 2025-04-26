@@ -47,7 +47,7 @@ A sample input file of three jobs is given as follows
 You can assume that
 1)	There are no more than 30 jobs in the input file (job.txt).
 2)	Processes arrive in the order they are read from the file for FCFS and RR-7.
-4) Main memory is limited to 512 MB
+4) Main memory is limited to 2048 MB
 5) Context switching time is zero.
 6) Your application must use threads (minimum two).
 
