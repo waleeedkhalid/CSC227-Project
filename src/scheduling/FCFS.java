@@ -28,12 +28,14 @@ public class FCFS {
 
     public void schedule(PCB job) {
         job.setState(PCBState.RUNNING);
-        // Record start and end times for Gantt chart
+
         int startTime = currentTime;
         int endTime = currentTime + job.getBurstTime();
         executionLog.add(new ExecutionEvent(job.getId(), startTime, endTime));
 
-        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState() + ", Selected at: " + currentTime + ", Starting Burst Time: " + currentTime + ", Ending Burst Time: " + endTime);
+        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState() +
+                ", Selected at: " + currentTime + ", Starting Burst Time: " + currentTime +
+                ", Ending Burst Time: " + endTime);
 
         currentTime += job.getBurstTime();
 
@@ -41,13 +43,13 @@ public class FCFS {
         System.out.println("Job ID: " + job.getId() + ", State: " + job.getState());
         completedJobs.add(job);
 
-        // Calculate metrics
-        job.setTurnaroundTime(currentTime);
-        job.setWaitingTime(currentTime - job.getBurstTime());
+        job.setTurnaroundTime(endTime); // arrivalTime assumed 0
+        job.setWaitingTime(endTime - job.getBurstTime());
 
         totalTurnaroundTime += job.getTurnaroundTime();
         totalWaitingTime += job.getWaitingTime();
     }
+
 
     public List<ExecutionEvent> getExecutionLog() {
         return executionLog;
@@ -61,12 +63,20 @@ public class FCFS {
         Queue<PCB> readyQueue = ReadyQueue.getReadyQueue();
 
         while (!jobQueue.isEmpty()) {
-            PCB job = jobQueue.poll();
-            if (job != null) {
+            PCB job = jobQueue.poll(); // Remove from jobQueue
+            if (job != null && job.getState() == PCBState.NEW) { // Only move NEW jobs
                 readyQueue.add(job);
-                schedule(job);
+                System.out.println("New job added to Ready Queue: " + job);
             }
         }
+
+        while (!readyQueue.isEmpty()) {
+            PCB job = readyQueue.poll(); // Get the next job
+            if (job != null) {
+                schedule(job); // Execute it
+            }
+        }
+
 
         // Display the average turnaround and waiting times
         double averageTurnaroundTime = (double) totalTurnaroundTime / (double) completedJobs.size();
