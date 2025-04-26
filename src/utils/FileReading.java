@@ -25,9 +25,14 @@ public class FileReading implements Runnable {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("job.txt"));
             String line;
-            while ((line=reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("[:;]");
-                // ProcessID:BurstTime:Priority:MemoryRequired
+
+                // Check if the line format is correct
+                if (parts.length != 4) {
+                    System.out.println("Error: Invalid format in line: " + line);
+                    continue;
+                }
                 try {
                     int processID = Integer.parseInt(parts[0]);
                     int burstTime = Integer.parseInt(parts[1]);
@@ -37,15 +42,15 @@ public class FileReading implements Runnable {
                     System.out.println(pcb);
                     JobQueue.addJob(pcb);
                 } catch (NumberFormatException e) {
-                    System.out.println("ERR:"+line);
+                    System.out.println("ERR:" + line);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
-
             reader.close();
         } catch (IOException e) {
             System.out.println(e.toString());
         }
     }
+
 }
