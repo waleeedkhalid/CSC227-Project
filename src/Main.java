@@ -2,7 +2,6 @@ import job.JobScheduler;
 import queues.JobQueue;
 import queues.ReadyQueue;
 import scheduling.FCFS;
-//import scheduling.PriorityScheduling;
 import scheduling.PriorityScheduling;
 import scheduling.RoundRobin;
 import utils.*;
