@@ -1,7 +1,7 @@
 package utils;
 
 public class MemoryManager {
-    private static int availableMemory = 0;
+    private static int availableMemory;
 
     public static void setAvailableMemory(int availableMemory) {
         MemoryManager.availableMemory = availableMemory;
@@ -24,4 +24,9 @@ public class MemoryManager {
     public static void deallocateMemory(int memory) {
         availableMemory += memory;
     }
+
+    public static void resetMemory() {
+        availableMemory = 2048; // Reset to initial memory size
+    }
 }
+
