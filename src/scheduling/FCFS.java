@@ -38,7 +38,7 @@ public class FCFS {
         currentTime += job.getBurstTime();
 
         job.setState(PCBState.TERMINATED);
-//        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState());
+        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState());
         completedJobs.add(job);
 
         // Calculate metrics
@@ -69,7 +69,9 @@ public class FCFS {
         }
 
         // Display the average turnaround and waiting times
-        System.out.println("Average Turnaround Time: " + (totalTurnaroundTime / completedJobs.size()));
-        System.out.println("Average Waiting Time: " + (totalWaitingTime / completedJobs.size()));
+        double averageTurnaroundTime = (double) totalTurnaroundTime / (double) completedJobs.size();
+        double averageWaitingTime = (double) totalWaitingTime / (double) completedJobs.size();
+        System.out.println("Average Turnaround Time: " + averageTurnaroundTime);
+        System.out.println("Average Waiting Time: " + averageWaitingTime);
     }
 }
