@@ -12,15 +12,19 @@ import java.util.Scanner;
 import static java.lang.Thread.sleep;
 
 public class Main {
+    static final int MEMORY_SIZE = 2048; // Memory size in MB
+    static final int TIME_QUANTUM = 7; // Round Robin time quantum (ms)
+
+    static FileReading fileReading = new FileReading();
+    static JobScheduler jobScheduler = new JobScheduler();
+    
     public static void main(String[] args) throws InterruptedException {
-        final int MEMORY_SIZE = 2048; // Memory size in MB
-        final int TIME_QUANTUM = 7; // Round Robin time quantum (ms)
 
         Scanner scanner = new Scanner(System.in);
 
         int choice;
         do {
-            initializeJobQueue(MEMORY_SIZE);
+            initializeJobQueue();
 
             // Instantiate the CPU scheduling algorithms
             FCFS fcfs = new FCFS();
@@ -59,7 +63,7 @@ public class Main {
         } while (true);
     }
 
-    private static void initializeJobQueue(int memory_size) throws InterruptedException {
+    private static void initializeJobQueue() throws InterruptedException {
         // Clear existing queues
         while (!JobQueue.isEmpty()) {
             JobQueue.removeJob();
@@ -69,10 +73,9 @@ public class Main {
         }
 
         // Reset memory
-        MemoryManager.setAvailableMemory(memory_size);
+        MemoryManager.setAvailableMemory(MEMORY_SIZE);
 
         // Read new jobs from file
-        FileReading fileReading = new FileReading();
         fileReading.start();
         sleep(100);
 
@@ -83,7 +86,6 @@ public class Main {
         }
 
         // Schedule jobs
-        JobScheduler jobScheduler = new JobScheduler();
         jobScheduler.start();
         sleep(100);
     }
