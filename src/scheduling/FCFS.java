@@ -26,7 +26,7 @@ public class FCFS {
         this.completedJobs = new ArrayList<>();
     }
 
-    public void schedule(PCB job) {
+    private void schedule(PCB job) {
         job.setState(PCBState.RUNNING);
 
         int startTime = currentTime;
