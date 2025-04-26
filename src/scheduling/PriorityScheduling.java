@@ -2,81 +2,117 @@ package scheduling;
 
 import job.PCB;
 import job.PCBState;
+import queues.JobQueue;
 import queues.ReadyQueue;
+import utils.ExecutionEvent;
 import utils.MemoryManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-/**
- * Non-preemptive Priority Scheduling (1=lowest, 8=highest).
- * Marks a process as 'starved' if its waitingTime > its priority at launch.
- */
+import java.util.Queue;
 
 public class PriorityScheduling {
+    private int currentTime;
+    private int totalTurnaroundTime;
+    private int totalWaitingTime;
+    private final List<ExecutionEvent> executionLog;
+    private final List<PCB> completedJobs;
 
-    public void run() throws InterruptedException {
-        int currentTime = 0;
-        List<PCB> finished = new ArrayList<>();
+    public PriorityScheduling() {
+        this.currentTime = 0;
+        this.totalTurnaroundTime = 0;
+        this.totalWaitingTime = 0;
+        this.executionLog = new ArrayList<>();
+        this.completedJobs = new ArrayList<>();
+    }
 
-        // wait for at least one job to reach the ready queue
-        while (ReadyQueue.isEmpty()) {
-            Thread.sleep(50);
+    public List<ExecutionEvent> getExecutionLog() {
+        return executionLog;
+    }
+
+    public List<PCB> getCompletedJobs() {
+        return completedJobs;
+    }
+
+    public void schedule(PCB job) {
+        job.setState(PCBState.RUNNING);
+        int startTime = currentTime;
+        int endTime = currentTime + job.getBurstTime();
+        executionLog.add(new ExecutionEvent(job.getId(), startTime, endTime));
+
+        System.out.println("Job ID: " + job.getId() + ", Priority: " + job.getPriority() + ", State: " + job.getState() +
+                ", Selected at: " + currentTime +
+                ", Starting Burst Time: " + startTime +
+                ", Ending Burst Time: " + endTime);
+
+        currentTime = endTime;
+
+        job.setState(PCBState.TERMINATED);
+        System.out.println("Job ID: " + job.getId() + ", State: " + job.getState());
+
+        completedJobs.add(job);
+
+        // Free memory if memory management is being used
+        MemoryManager.deallocateMemory(job.getRequiredMemory());
+
+        job.setTurnaroundTime(currentTime);
+        job.setWaitingTime(currentTime - job.getBurstTime());
+
+        totalTurnaroundTime += job.getTurnaroundTime();
+        totalWaitingTime += job.getWaitingTime();
+    }
+
+    public void run() {
+        Queue<PCB> jobQueue = JobQueue.getJobQueue();
+        Queue<PCB> readyQueue = ReadyQueue.getReadyQueue();
+
+        // Move all jobs from jobQueue to readyQueue
+        while (!jobQueue.isEmpty()) {
+            PCB job = jobQueue.poll();
+            if (job != null && !readyQueue.contains(job)) {
+                readyQueue.add(job);
+            }
         }
 
-        // pull jobs until none remain
-        while (!ReadyQueue.isEmpty()) {
-            // sort by ascending priority
-            List<PCB> ready = new ArrayList<>(ReadyQueue.getJobs());
-            ready.sort(Comparator.comparingInt(PCB::getPriority));
+        // Now create a list from readyQueue and sort it by priority descending
+        List<PCB> sortedList = new ArrayList<>(readyQueue);
+        sortedList.sort(Comparator.comparingInt(PCB::getPriority).reversed());
+        System.out.println("Sorted jobs to schedule:");
 
-            PCB pcb = ready.get(0); // get the highest priority job
+        for (PCB job : sortedList) {
+            System.out.println("Job ID: " + job.getId() + " Priority: " + job.getPriority());
+        }
+        System.out.println();
 
-            // remove it, allocate its memory, and run it
-            ReadyQueue.removeJob();
+        int starvationThreshold = 40;
 
-            MemoryManager.allocateMemory(pcb.getRequiredMemory());
-
-            pcb.setState(PCBState.RUNNING);
-            pcb.setStartTime(currentTime);
-
-            // “run” the job
-            currentTime += pcb.getBurstTime();
-            pcb.setTurnaroundTime(currentTime);
-            // since arrivalTime=0 for all, waiting = startTime, turnaround = completionTime
-            pcb.setWaitingTime(pcb.getStartTime());
-
-            // starvation if it waited longer (ms) than its priority value
-            if (pcb.getWaitingTime() > pcb.getPriority()) {
-                pcb.setStarvation(true);
+        // Process sorted list
+        for (PCB job : sortedList) {
+            int jobWaitingTime = currentTime;
+            if (jobWaitingTime > starvationThreshold) {
+                System.out.println("Job ID: " + job.getId() + " is starving!");
+                job.setPriority(job.getPriority() + 1);
             }
 
-            pcb.setState(PCBState.TERMINATED);
-            MemoryManager.deallocateMemory(pcb.getRequiredMemory());
-            finished.add(pcb);
+            if (job.getRequiredMemory() <= MemoryManager.getAvailableMemory()) {
+                // Allocate memory
+                MemoryManager.allocateMemory(job.getRequiredMemory());
 
-            System.out.printf(
-                    "P%d  start=%d  end=%d  wait=%d  turnaround=%d  starved=%b%n",
-                    pcb.getId(),
-                    pcb.getStartTime(),
-                    pcb.getWaitingTime(),
-                    pcb.getTurnaroundTime(),
-                    pcb.isStarvation()
-            );
+                schedule(job);
+
+                // After job finishes, free the memory
+                MemoryManager.deallocateMemory(job.getRequiredMemory());
+            }
         }
 
-        // summary
-        double avgWait = finished.stream()
-                .mapToInt(PCB::getWaitingTime)
-                .average()
-                .orElse(0);
-        double avgTurn = finished.stream()
-                .mapToInt(PCB::getTurnaroundTime)
-                .average()
-                .orElse(0);
+        // After all jobs are processed, calculate average metrics
+        if (!completedJobs.isEmpty()) {
+            double averageTurnaroundTime = (double) totalTurnaroundTime / completedJobs.size();
+            double averageWaitingTime = (double) totalWaitingTime / completedJobs.size();
 
-        System.out.printf("→ Average waiting time:   %.2f ms%n", avgWait);
-        System.out.printf("→ Average turnaround time: %.2f ms%n", avgTurn);
+            System.out.println("Average Turnaround Time: " + averageTurnaroundTime);
+            System.out.println("Average Waiting Time: " + averageWaitingTime);
+        }
     }
 }
