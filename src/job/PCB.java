@@ -16,7 +16,6 @@ public class PCB {
     int remainingTime; // RR
     int originalBurstTime; // RR
     boolean starvation; // Priority
-    int arrivalTime;
 
     public void setId(int id) {
         this.id = id;
@@ -52,10 +51,6 @@ public class PCB {
 
     public void setStarvation(boolean starvation) {
         this.starvation = starvation;
-    }
-
-    public void setArrivalTime(int arrivalTime) {
-        this.arrivalTime = arrivalTime;
     }
 
     public PCB(int id, int burstTime, int priority, int requiredMemory) {
@@ -110,11 +105,6 @@ public class PCB {
     public int getRemainingTime() {
         return remainingTime;
     }
-
-    public int getArrivalTime() {
-        return arrivalTime;
-    }
-
 
 
     public boolean isStarvation() {
