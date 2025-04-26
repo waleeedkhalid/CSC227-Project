@@ -48,6 +48,9 @@ public class RoundRobin {
 
             int executionTime = Math.min(timeQuantum, job.getRemainingTime());
 
+            job.setState(PCBState.RUNNING);
+            System.out.println("Job ID: " + job.getId() + ", State: " + job.getState() + ", Selected at: " + currentTime + ", Starting Execution Time: " + currentTime + ", Ending Execution Time: " + executionTime);
+
             // Execute the job for up to quantum time units
             executionLog.add(new ExecutionEvent(job.getId(), currentTime, currentTime + executionTime));
             currentTime += executionTime;
@@ -61,6 +64,7 @@ public class RoundRobin {
                 job.setTurnaroundTime(currentTime);
                 job.setWaitingTime(job.getTurnaroundTime() - job.getBurstTime());
                 job.setState(PCBState.TERMINATED);
+                System.out.println("Job ID: " + job.getId() + ", State: " + job.getState());
                 completedJobs.add(job);
             }
         }
