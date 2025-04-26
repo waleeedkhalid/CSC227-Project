@@ -5,6 +5,7 @@ import scheduling.FCFS;
 import scheduling.PriorityScheduling;
 import scheduling.RoundRobin;
 import utils.*;
+import utils.MemoryManager;
 
 import java.util.PriorityQueue;
 import java.util.Scanner;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 import static java.lang.Thread.sleep;
 
 public class Main {
-    static final int MEMORY_SIZE = 2048; // Memory size in MB
+    // TO CHANGE MEMORY SIZE, GO TO MemoryManager.java
     static final int TIME_QUANTUM = 7; // Round Robin time quantum (ms)
 
     static FileReading fileReading = new FileReading();
@@ -75,7 +76,7 @@ public class Main {
         }
 
         // Reset memory
-        MemoryManager.setAvailableMemory(MEMORY_SIZE);
+        MemoryManager.setAvailableMemory(MemoryManager.MEMORY_SIZE);
 
         // Read new jobs from file
         fileReading.start();
