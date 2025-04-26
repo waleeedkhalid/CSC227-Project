@@ -51,6 +51,8 @@ public class Main {
                 case 3:
                     System.out.println("Priority Scheduling");
                     priorityScheduling.run();
+                    GanttChart.displayGanttChart(priorityScheduling.getExecutionLog());
+                    GanttChart.displayStatistics(priorityScheduling.getCompletedJobs());
                     break;
                 case 4:
                     System.out.println("Exiting...");
