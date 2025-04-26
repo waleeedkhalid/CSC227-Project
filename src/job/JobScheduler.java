@@ -15,6 +15,7 @@ public class JobScheduler implements Runnable {
     public void run() {
         Queue<PCB> jobQueue = new LinkedList<>(JobQueue.getJobQueue());
         // Load jobs from job queue to ready queue
+        System.out.println();
         while (true) {
             while (!jobQueue.isEmpty()) {
                 // Check if there is enough memory available
