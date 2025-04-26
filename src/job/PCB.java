@@ -12,7 +12,6 @@ public class PCB {
     int burstTime;
     int turnaroundTime;
     int waitingTime;
-    int completionTime;
     int startTime;
     int remainingTime; // RR
     int originalBurstTime; // RR
@@ -43,10 +42,6 @@ public class PCB {
         this.waitingTime = waitingTime;
     }
 
-    public void setCompletionTime(int completionTime) {
-        this.completionTime = completionTime;
-    }
-
     public void setStartTime(int startTime) {
         this.startTime = startTime;
     }
@@ -71,7 +66,6 @@ public class PCB {
         this.state = PCBState.NEW;
         this.turnaroundTime = 0;
         this.waitingTime = 0;
-        this.completionTime = 0;
         this.startTime = 0;
         this.remainingTime = burstTime;
         this.starvation = false; // Priority
@@ -109,10 +103,6 @@ public class PCB {
         return waitingTime;
     }
 
-    public int getCompletionTime() {
-        return completionTime;
-    }
-
     public int getStartTime() {
         return startTime;
     }
@@ -147,7 +137,6 @@ public class PCB {
                 ", priority=" + priority +
                 ", turnaroundTime=" + turnaroundTime +
                 ", waitingTime=" + waitingTime +
-                ", completionTime=" + completionTime +
                 ", startTime=" + startTime +
                 ", remainingTime=" + remainingTime +
                 ", starvation=" + starvation +

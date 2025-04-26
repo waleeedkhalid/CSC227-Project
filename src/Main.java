@@ -12,19 +12,19 @@ import java.util.Scanner;
 import static java.lang.Thread.sleep;
 
 public class Main {
+    static final int MEMORY_SIZE = 2048; // Memory size in MB
+    static final int TIME_QUANTUM = 7; // Round Robin time quantum (ms)
+
+    static FileReading fileReading = new FileReading();
+    static JobScheduler jobScheduler = new JobScheduler();
+    
     public static void main(String[] args) throws InterruptedException {
-        MemoryManager.setAvailableMemory(2048); // MEMORY MANAGER SECTION
-        final int TIME_QUANTUM = 7; // Round Robin time quantum (ms)
 
         Scanner scanner = new Scanner(System.in);
 
         int choice;
         do {
             initializeJobQueue();
-
-            JobScheduler jobScheduler = new JobScheduler();
-            jobScheduler.start();
-            sleep(100);
 
             // Instantiate the CPU scheduling algorithms
             FCFS fcfs = new FCFS();
@@ -39,11 +39,14 @@ public class Main {
                 case 1:
                     System.out.println("FCFS: First Come First Serve");
                     fcfs.run();
+                    GanttChart.displayGanttChart(fcfs.getExecutionLog());
+                    GanttChart.displayStatistics(fcfs.getCompletedJobs());
                     break;
                 case 2:
                     System.out.println("Round Robin");
-
                     roundRobin.run();
+                    GanttChart.displayGanttChart(roundRobin.getExecutionLog());
+                    GanttChart.displayStatistics(roundRobin.getCompletedJobs());
                     break;
                 case 3:
                     System.out.println("Priority Scheduling");
@@ -61,8 +64,18 @@ public class Main {
     }
 
     private static void initializeJobQueue() throws InterruptedException {
-        MemoryManager.setAvailableMemory(2048); // Reset memory after each scheduling algorithm
-        FileReading fileReading = new FileReading();
+        // Clear existing queues
+        while (!JobQueue.isEmpty()) {
+            JobQueue.removeJob();
+        }
+        while (!ReadyQueue.isEmpty()) {
+            ReadyQueue.removeJob();
+        }
+
+        // Reset memory
+        MemoryManager.setAvailableMemory(MEMORY_SIZE);
+
+        // Read new jobs from file
         fileReading.start();
         sleep(100);
 
@@ -71,5 +84,9 @@ public class Main {
             System.out.println("Exiting...");
             System.exit(0);
         }
+
+        // Schedule jobs
+        jobScheduler.start();
+        sleep(100);
     }
 }

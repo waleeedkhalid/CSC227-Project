@@ -13,7 +13,11 @@ public class MemoryManager {
 
     // System Call to allocate memory
     public static void allocateMemory(int memory) {
-        availableMemory -= memory;
+        if (memory <= availableMemory) {
+            availableMemory -= memory;
+        } else {
+            System.out.println("Not enough memory available to allocate " + memory + " units.");
+        }
     }
 
     // System Call to deallocate memory

@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class ReadyQueue {
-    private static Queue<PCB> readyQueue = new LinkedList<>();
+    private static final Queue<PCB> readyQueue = new LinkedList<>();
 
     public static void addJob(PCB pcb) {
         if (pcb.getRequiredMemory() <= MemoryManager.getAvailableMemory()) {
