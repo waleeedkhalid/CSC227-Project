@@ -2,8 +2,12 @@ package utils;
 
 public class MemoryManager {
     private static int availableMemory;
+    public static final int MEMORY_SIZE = 2048; // Centralized memory size constant
 
     public static void setAvailableMemory(int availableMemory) {
+        if (availableMemory < 0) {
+            throw new IllegalArgumentException("Available memory cannot be negative");
+        }
         MemoryManager.availableMemory = availableMemory;
     }
 
@@ -26,7 +30,6 @@ public class MemoryManager {
     }
 
     public static void resetMemory() {
-        availableMemory = 2048; // Reset to initial memory size
+        availableMemory = MEMORY_SIZE; // Reset to MEMORY_SIZE constant
     }
 }
-
