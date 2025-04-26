@@ -64,14 +64,16 @@ public class PriorityScheduling {
     }
 
     public void run() {
+        MemoryManager.resetMemory(); // Reset memory to initial size
         Queue<PCB> jobQueue = JobQueue.getJobQueue();
         Queue<PCB> readyQueue = ReadyQueue.getReadyQueue();
 
         // Move all jobs from jobQueue to readyQueue
         while (!jobQueue.isEmpty()) {
-            PCB job = jobQueue.poll();
-            if (job != null && !readyQueue.contains(job)) {
+            PCB job = jobQueue.poll(); // Remove from jobQueue
+            if (job != null && job.getState() == PCBState.NEW) { // Only move NEW jobs
                 readyQueue.add(job);
+                System.out.println("New job added to Ready Queue: " + job);
             }
         }
 
@@ -98,9 +100,7 @@ public class PriorityScheduling {
             if (job.getRequiredMemory() <= MemoryManager.getAvailableMemory()) {
                 // Allocate memory
                 MemoryManager.allocateMemory(job.getRequiredMemory());
-
                 schedule(job);
-
                 // After job finishes, free the memory
                 MemoryManager.deallocateMemory(job.getRequiredMemory());
             }
