@@ -38,9 +38,16 @@ public class FileReading implements Runnable {
                     int burstTime = Integer.parseInt(parts[1]);
                     int priority = Integer.parseInt(parts[2]);
                     int memoryRequired = Integer.parseInt(parts[3]);
-                    PCB pcb = new PCB(processID, burstTime, priority, memoryRequired);
-                    System.out.println(pcb);
-                    JobQueue.addJob(pcb);
+
+                    if (memoryRequired > 2048) {
+                        System.out.println("Error: Ram can not run process ID " + processID);
+                        continue;
+                    }
+                    else {
+                        PCB pcb = new PCB(processID, burstTime, priority, memoryRequired);
+                        System.out.println(pcb);
+                        JobQueue.addJob(pcb);
+                    }
                 } catch (NumberFormatException e) {
                     System.out.println("ERR:" + line);
                 } catch (Exception e) {
