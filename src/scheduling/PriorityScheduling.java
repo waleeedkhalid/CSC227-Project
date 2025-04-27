@@ -80,7 +80,7 @@ public class PriorityScheduling {
 
         // Now create a list from readyQueue and sort it by priority ascending
         List<PCB> sortedList = new ArrayList<>(readyQueue);
-        sortedList.sort(Comparator.comparingInt(PCB::getPriority));
+        sortedList.sort(Comparator.comparingInt(PCB::getPriority).reversed());
         System.out.println("Sorted jobs to schedule:");
 
         for (PCB job : sortedList) {
