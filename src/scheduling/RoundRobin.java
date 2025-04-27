@@ -6,6 +6,7 @@ import queues.JobQueue;
 import queues.ReadyQueue;
 import utils.ExecutionEvent;
 import utils.GanttChart;
+import utils.MemoryManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -46,6 +47,9 @@ public class RoundRobin {
 
         while (!queue.isEmpty()) {
             PCB job = queue.poll();
+            if (job == null) {
+                continue; // Skip if job is null
+            }
 
             int executionTime = Math.min(timeQuantum, job.getRemainingTime());
 
@@ -77,6 +81,9 @@ public class RoundRobin {
         }
         double averageTurnaroundTime = (double) totalTurnaroundTime / JobQueue.getJobQueue().size();
         double averageWaitingTime = (double) totalWaitingTime / JobQueue.getJobQueue().size();
+        if(completedJobs.isEmpty()) {
+            return;
+        }
         GanttChart.printTimes(averageTurnaroundTime, averageWaitingTime);
     }
 
