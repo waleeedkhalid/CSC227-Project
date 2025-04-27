@@ -6,6 +6,7 @@ public class Menu {
         System.out.println("1. First Come First Serve (FCFS)");
         System.out.println("2. Round Robin");
         System.out.println("3. Priority Scheduling");
-        System.out.println("4. Exit");
+        System.out.println("4. Comparative Analysis");
+        System.out.println("5. Exit");
     }
 }
