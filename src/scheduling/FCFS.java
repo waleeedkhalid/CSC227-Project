@@ -7,8 +7,10 @@ import queues.ReadyQueue;
 import utils.ExecutionEvent;
 import utils.FileReading;
 import utils.GanttChart;
+import utils.MemoryManager;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
@@ -60,14 +62,15 @@ public class FCFS {
     }
 
     public void run() {
-        Queue<PCB> jobQueue = JobQueue.getJobQueue();
-        Queue<PCB> readyQueue = ReadyQueue.getReadyQueue();
+        Queue<PCB> jobQueue = new LinkedList<>(JobQueue.getJobQueue());
+        Queue<PCB> readyQueue = new LinkedList<>(ReadyQueue.getReadyQueue());
 
         while (!jobQueue.isEmpty()) {
             PCB job = jobQueue.poll(); // Remove from jobQueue
-            if (job != null && job.getState() == PCBState.NEW) { // Only move NEW jobs
+            if (job != null && job.getState() == PCBState.NEW) {
                 readyQueue.add(job);
                 System.out.println("New job added to Ready Queue: " + job);
+                job.setState(PCBState.READY);
             }
         }
 
@@ -82,6 +85,9 @@ public class FCFS {
         // Display the average turnaround and waiting times
         double averageTurnaroundTime = (double) totalTurnaroundTime / (double) completedJobs.size();
         double averageWaitingTime = (double) totalWaitingTime / (double) completedJobs.size();
-        GanttChart.printTimes(averageTurnaroundTime, averageWaitingTime);
+
+        if (!completedJobs.isEmpty()) {
+            GanttChart.printTimes(averageTurnaroundTime, averageWaitingTime);
+        }
     }
 }
