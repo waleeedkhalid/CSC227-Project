@@ -39,8 +39,8 @@ public class FileReading implements Runnable {
                     int priority = Integer.parseInt(parts[2]);
                     int memoryRequired = Integer.parseInt(parts[3]);
 
-                    if (memoryRequired > 2048) {
-                        System.out.println("Error: Ram can not run process ID " + processID);
+                    if (memoryRequired > MemoryManager.MEMORY_SIZE) {
+                        System.out.println("ERR: Memory required exceeds available memory for process ID: " + processID);
                         continue;
                     }
                     else {
