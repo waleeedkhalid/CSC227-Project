@@ -75,10 +75,11 @@ public class PriorityScheduling {
             if (job != null && job.getState() == PCBState.NEW) { // Only move NEW jobs
                 readyQueue.add(job);
                 System.out.println("New job added to Ready Queue: " + job);
+                job.setState(PCBState.READY);
             }
         }
 
-        // Now create a list from readyQueue and sort it by priority ascending
+        // Now create a list from readyQueue and sort it by priority descending
         List<PCB> sortedList = new ArrayList<>(readyQueue);
         sortedList.sort(Comparator.comparingInt(PCB::getPriority).reversed());
         System.out.println("Sorted jobs to schedule:");
