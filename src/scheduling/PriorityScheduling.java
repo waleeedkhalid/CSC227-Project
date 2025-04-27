@@ -88,10 +88,10 @@ public class PriorityScheduling {
         }
         System.out.println();
 
-        int starvationThreshold = 40;
 
         // Process sorted list
         for (PCB job : sortedList) {
+            int starvationThreshold = 30 * job.getPriority();
             int jobWaitingTime = currentTime;
             if (jobWaitingTime > starvationThreshold) {
                 System.out.println("Job ID: " + job.getId() + " is starving!");
