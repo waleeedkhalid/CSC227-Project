@@ -7,6 +7,10 @@ import java.util.List;
 
 public class GanttChart {
     public static void displayGanttChart(List<ExecutionEvent> executionLog) {
+        if (executionLog.isEmpty()) {
+            System.out.println("No execution log available.");
+            return;
+        }
         System.out.println("\nGantt Chart:");
 
         List<Integer> timePositions = new ArrayList<>();
@@ -71,13 +75,18 @@ public class GanttChart {
 
 
     public static void displayStatistics(List<PCB> jobs) {
+        if(jobs.isEmpty()) {
+            System.out.println("No jobs to display statistics for.");
+            return;
+        }
         System.out.println("\nStatistics:");
-        System.out.printf("%-10s %-10s %-10s\n", "Process ID", "Turnaround(ms)", "Waiting(ms)");
+        System.out.printf("%-10s %-10s %-10s %-10s\n", "Process ID", "Turnaround(ms)", "Waiting(ms)", "Starved");
         for (PCB job : jobs) {
-            System.out.printf("%-10d %-10d %-10d\n",
+            System.out.printf("%-10d %-14d %-12d %-10b\n",
                     job.getId(),
                     job.getTurnaroundTime(),
-                    job.getWaitingTime());
+                    job.getWaitingTime(),
+                    job.isStarvation());
         }
     }
 
