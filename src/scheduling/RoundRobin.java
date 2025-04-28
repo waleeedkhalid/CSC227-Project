@@ -81,8 +81,8 @@ public class RoundRobin {
 
 
 
-        double averageTurnaroundTime = (double) totalTurnaroundTime / JobQueue.getJobQueue().size();
-        double averageWaitingTime = (double) totalWaitingTime / JobQueue.getJobQueue().size();
+        double averageTurnaroundTime = (double) totalTurnaroundTime / completedJobs.size();
+        double averageWaitingTime = (double) totalWaitingTime / completedJobs.size();
         if(completedJobs.isEmpty()) {
             return;
         }
