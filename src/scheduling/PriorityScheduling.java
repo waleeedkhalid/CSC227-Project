@@ -54,9 +54,6 @@ public class PriorityScheduling {
 
         completedJobs.add(job);
 
-        // Free memory if memory management is being used
-        MemoryManager.deallocateMemory(job.getRequiredMemory());
-
         job.setTurnaroundTime(currentTime);
         job.setWaitingTime(currentTime - job.getBurstTime());
 
