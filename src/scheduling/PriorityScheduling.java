@@ -97,6 +97,7 @@ public class PriorityScheduling {
             if (jobWaitingTime > starvationThreshold) {
                 System.out.println("Job ID: " + job.getId() + " is starving!");
                 job.setPriority(job.getPriority() + 1);
+                job.setStarvation(true);
             }
 
             if (job.getRequiredMemory() <= MemoryManager.getAvailableMemory()) {
