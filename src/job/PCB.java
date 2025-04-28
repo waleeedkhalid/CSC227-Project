@@ -4,7 +4,7 @@ package job;
 // turnaround time for each job and waiting time for each job.
 
 public class PCB {
-    int id;
+    String id;
     PCBState state;
     int requiredMemory;
     int priority;
@@ -17,7 +17,7 @@ public class PCB {
     int originalBurstTime; // RR
     boolean starvation; // Priority
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -53,7 +53,7 @@ public class PCB {
         this.starvation = starvation;
     }
 
-    public PCB(int id, int burstTime, int priority, int requiredMemory) {
+    public PCB(String id, int burstTime, int priority, int requiredMemory) {
         this.id = id;
         this.burstTime = burstTime;
         this.priority = priority;
@@ -66,7 +66,7 @@ public class PCB {
         this.starvation = false; // Priority
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
