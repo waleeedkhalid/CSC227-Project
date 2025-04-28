@@ -34,7 +34,7 @@ public class FileReading implements Runnable {
                     continue;
                 }
                 try {
-                    int processID = Integer.parseInt(parts[0]);
+                    String processID = parts[0];
                     int burstTime = Integer.parseInt(parts[1]);
                     int priority = Integer.parseInt(parts[2]);
                     int memoryRequired = Integer.parseInt(parts[3]);
@@ -43,6 +43,13 @@ public class FileReading implements Runnable {
                         System.out.println("ERR: Memory required exceeds available memory for process ID: " + processID);
                         continue;
                     }
+
+                    // Check negative numbers
+                    if (burstTime < 0 || priority < 0 || memoryRequired < 0) {
+                        System.out.println("ERR: Negative values are not allowed for process ID: " + processID);
+                        continue;
+                    }
+
                     else {
                         PCB pcb = new PCB(processID, burstTime, priority, memoryRequired);
                         System.out.println(pcb);
