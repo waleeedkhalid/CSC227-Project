@@ -68,17 +68,19 @@ public class RoundRobin {
                 // Job is completed
                 job.setTurnaroundTime(currentTime);
                 job.setWaitingTime(job.getTurnaroundTime() - job.getBurstTime());
+
+                // Calculate average turnaround and waiting times
+                totalTurnaroundTime += job.getTurnaroundTime();
+                totalWaitingTime += job.getWaitingTime();
+
                 job.setState(PCBState.TERMINATED);
                 System.out.println("Job ID: " + job.getId() + ", State: " + job.getState());
                 completedJobs.add(job);
             }
         }
 
-        // Calculate average turnaround and waiting times
-        for (PCB job : JobQueue.getJobQueue()) {
-            totalTurnaroundTime += job.getTurnaroundTime();
-            totalWaitingTime += job.getWaitingTime();
-        }
+
+
         double averageTurnaroundTime = (double) totalTurnaroundTime / JobQueue.getJobQueue().size();
         double averageWaitingTime = (double) totalWaitingTime / JobQueue.getJobQueue().size();
         if(completedJobs.isEmpty()) {
