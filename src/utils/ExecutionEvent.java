@@ -7,17 +7,17 @@ import java.util.List;
 import java.util.Queue;
 
 public class ExecutionEvent {
-    int processID;
+    String processID;
     int startTime;
     int endTime;
 
-    public ExecutionEvent(int processID, int startTime, int endTime) {
+    public ExecutionEvent(String processID, int startTime, int endTime) {
         this.processID = processID;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public int getProcessId() {
+    public String getProcessId() {
         return processID;
     }
 
