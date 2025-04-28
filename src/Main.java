@@ -14,7 +14,7 @@ import static java.lang.Thread.sleep;
 
 public class Main {
     // TO CHANGE MEMORY SIZE, GO TO MemoryManager.java
-    static final int TIME_QUANTUM = 4; // Round Robin time quantum (ms)
+    static final int TIME_QUANTUM = 7; // Round Robin time quantum (ms)
 
     static FileReading fileReading = new FileReading();
     static JobScheduler jobScheduler = new JobScheduler();
